@@ -38,6 +38,7 @@ Terima kasih telah bergabung dalam eksplorasi kami terhadap manajemen kebun bina
 
 <div style="display:flex;">
   <img src="https://github.com/Fahminurs/Bandung-Park-Zoo/blob/main/SS/Home.png" alt="Home.png" width="400" style="float:left; margin-right:10px;">
+  <img src="https://github.com/Fahminurs/Bandung-Park-Zoo/blob/main/SS/Hasil.png" alt="Hasil.png" width="600" style="float:left; margin-right:10px;">
 </div>
 
 
