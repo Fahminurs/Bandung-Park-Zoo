@@ -9,66 +9,86 @@
 #include <map>
 #include <conio.h>
 #include <thread>
+#include <tabulate/table.hpp>
 
 using namespace std;
-using namespace chrono;
+using namespace tabulate;
+using Row_t = Table::Row_t;
+
 int pilih,pilih1;
 char escKey;
 
-void Tampilan(MYSQL *conn, const string &query) {
-    int query_state = mysql_query(conn, query.c_str());
+
+
+void Tampilan1(MYSQL *conn, const string &query) {
+    string text
+;    int query_state = mysql_query(conn, query.c_str());
 
 
     if (!query_state) {
         MYSQL_RES *result = mysql_store_result(conn);
         MYSQL_FIELD *field;
         MYSQL_ROW row;
+  Table readme;
+  readme.format().border_color(Color::cyan);
+  readme.add_row(Row_t{" "});
+readme[0].format().hide_border_bottom();
+        readme.add_row(Row_t{text});
+  readme[1].format().font_align(FontAlign::center).font_color(Color::cyan).hide_border_top();
+   readme.add_row(Row_t{" "});
+  readme[2]
+      .format()
+      .font_align(FontAlign::center)
+      .font_style({FontStyle::underline, FontStyle::italic})
+      .font_color(Color::white).hide_border_top();
 
-
+        Table tampilan;
         int num_fields = mysql_num_fields(result);
-        vector<int> column_widths(num_fields, 0);
 
-        cout << endl<<endl;
-        // kalkulasi header colum berdasarkan lebar column
+        // gunakan deklarasi disini agar data sebelumnya tidak tersimpan
+        // sehingga ketika swtich fitur tidak ada data yang sebelumnya
+        Row_t header_row;
         for (int i = 0; i < num_fields; i++) {
+            // data nama header
             field = mysql_fetch_field(result);
-            int content_width = strlen(field->name);
-
-
-            mysql_data_seek(result, 0);
-            while ((row = mysql_fetch_row(result))) {
-                if (row[i] != nullptr) {
-                    int length = strlen(row[i]);
-                    if (length > content_width) {
-                        content_width = length;
-                    }
-                }
-            }
-
-            column_widths[i] = content_width; // Update column width
-            cout << setw(content_width + 2) << left << field->name;
-
+            header_row.push_back(field->name);
         }
-        cout << endl;
 
-        // Display separator line
-        for (int i = 0; i < accumulate(column_widths.begin(), column_widths.end(), 0) + 2 * (num_fields - 1); i++) {
-            cout << "=";
-        }
-        cout << endl;
+        tampilan.add_row(header_row);
 
-        // Display data
-        mysql_data_seek(result, 0); // Set row cursor to the beginning
+        // Format baris pertama (indeks 0)
+        tampilan[0].format()
+            .font_align(FontAlign::center)
+            .font_color(Color::cyan)
+            .font_style({FontStyle::bold});
+
+        mysql_data_seek(result, 0);
         while ((row = mysql_fetch_row(result))) {
+            // isi column (Header)
+            Row_t data_row;
             for (int i = 0; i < num_fields; i++) {
                 if (row[i] != nullptr) {
-                    cout << setw(column_widths[i] + 2) << left << row[i];
+                    data_row.push_back(row[i]);
                 } else {
-                    cout << setw(column_widths[i] + 2) << left << "NULL";
+                    data_row.push_back("NULL");
                 }
             }
-            cout << endl;
+            tampilan.add_row(data_row);
         }
+        readme.add_row(Row_t{tampilan});
+
+        readme[3].format()
+    .font_align(FontAlign::center);
+
+//      for (auto& cell : readme.row(2)) {
+//      cell.format()
+//        .font_align(FontAlign::center)
+//        .font_color({Color::cyan});
+//
+//  }
+
+ //cout << tampilan;
+      cout <<readme ;
 
         mysql_free_result(result);
     } else {
@@ -77,18 +97,157 @@ void Tampilan(MYSQL *conn, const string &query) {
 }
 
 
+void Tampilan(MYSQL *conn, const string &query, string text) {
+    int query_state = mysql_query(conn, query.c_str());
+
+
+    if (!query_state) {
+        MYSQL_RES *result = mysql_store_result(conn);
+        MYSQL_FIELD *field;
+        MYSQL_ROW row;
+  Table readme;
+  readme.format().border_color(Color::cyan);
+  readme.add_row(Row_t{" "});
+readme[0].format().hide_border_bottom();
+        readme.add_row(Row_t{text});
+  readme[1].format().font_align(FontAlign::center).font_color(Color::cyan).hide_border_top();
+   readme.add_row(Row_t{" "});
+  readme[2]
+      .format()
+      .font_align(FontAlign::center)
+      .font_style({FontStyle::underline, FontStyle::italic})
+      .font_color(Color::white).hide_border_top();
+
+        Table tampilan;
+        int num_fields = mysql_num_fields(result);
+
+        // gunakan deklarasi disini agar data sebelumnya tidak tersimpan
+        // sehingga ketika swtich fitur tidak ada data yang sebelumnya
+        Row_t header_row;
+        for (int i = 0; i < num_fields; i++) {
+            // data nama header
+            field = mysql_fetch_field(result);
+            header_row.push_back(field->name);
+        }
+
+        tampilan.add_row(header_row);
+
+        // Format baris pertama (indeks 0)
+        tampilan[0].format()
+            .font_align(FontAlign::center)
+            .font_color(Color::cyan)
+            .font_style({FontStyle::bold});
+
+        mysql_data_seek(result, 0);
+        while ((row = mysql_fetch_row(result))) {
+            // isi column (Header)
+            Row_t data_row;
+            for (int i = 0; i < num_fields; i++) {
+                if (row[i] != nullptr) {
+                    data_row.push_back(row[i]);
+                } else {
+                    data_row.push_back("NULL");
+                }
+            }
+            tampilan.add_row(data_row);
+        }
+        readme.add_row(Row_t{tampilan});
+
+        readme[3].format()
+    .font_align(FontAlign::center);
+
+//      for (auto& cell : readme.row(2)) {
+//      cell.format()
+//        .font_align(FontAlign::center)
+//        .font_color({Color::cyan});
+//
+//  }
+
+ //cout << tampilan;
+      cout <<readme ;
+
+        mysql_free_result(result);
+    } else {
+        cout << "\nTidak Ada Pilihan \ Query Error" << endl;
+        cout <<"\nNotif [Error] Mysql Dialog : \n" << mysql_error(conn) << endl;
+    }
+}
+
+//void Tampilan1(MYSQL *conn, const string &query) {
+//    int query_state = mysql_query(conn, query.c_str());
+//
+//
+//    if (!query_state) {
+//        MYSQL_RES *result = mysql_store_result(conn);
+//        MYSQL_FIELD *field;
+//        MYSQL_ROW row;
+//
+//
+//        int num_fields = mysql_num_fields(result);
+//        vector<int> column_widths(num_fields, 0);
+//
+//        cout << endl<<endl;
+//        // kalkulasi header colum berdasarkan lebar column
+//        for (int i = 0; i < num_fields; i++) {
+//            field = mysql_fetch_field(result);
+//            int content_width = strlen(field->name);
+//
+//
+//            mysql_data_seek(result, 0);
+//            while ((row = mysql_fetch_row(result))) {
+//                if (row[i] != nullptr) {
+//                    int length = strlen(row[i]);
+//                    if (length > content_width) {
+//                        content_width = length;
+//                    }
+//                }
+//            }
+//
+//            column_widths[i] = content_width; // Update column width
+//            cout << setw(content_width + 2) << left << field->name;
+//
+//        }
+//        cout << endl;
+//
+//        // Display separator line
+//        for (int i = 0; i < accumulate(column_widths.begin(), column_widths.end(), 0) + 2 * (num_fields - 1); i++) {
+//            cout << "=";
+//        }
+//        cout << endl;
+//
+//        // Display data
+//        mysql_data_seek(result, 0); // Set row cursor to the beginning
+//        while ((row = mysql_fetch_row(result))) {
+//            for (int i = 0; i < num_fields; i++) {
+//                if (row[i] != nullptr) {
+//                  cout << setw(column_widths[i] + 2) << left << row[i];
+//                  cout << left ;
+//                } else {
+//                    cout << setw(column_widths[i] + 2) << left << "NULL";
+//                }
+//            }
+//            cout << endl;
+//        }
+//
+//        mysql_free_result(result);
+//    } else {
+//        cout << "Error in query execution: " << mysql_error(conn) << endl;
+//    }
+//}
 
 
 
 
-void Display_hewan(MYSQL* conn) {
+
+
+void Display_hewan(MYSQL* conn, int pilih) {
 
 system("cls");
     if (conn) {
         cout << "Pilih(1 untuk Ascending, 2 untuk Descending): ";
         cin >> pilih;
 
-        string orderType = (pilih == 1) ? "ASC" : "DESC";
+        string orderType = (pilih == 1) ? "ASC" : ((pilih == 2) ? "DESC" : "Tidak Ada Pilihan" ) ;
 
         string query = "SELECT "
             "  h.Id_Hewan as \"Kode Hewan\","
@@ -102,20 +261,37 @@ system("cls");
             "FROM hewan h "
             "ORDER BY DATEDIFF(CURRENT_DATE, h.Tgl_Lahir) " + orderType;
 
-Tampilan(conn,query);
+
+            string text;
+             if (pilih == 1){
+                text ="Menampilkan Hewan Berdasarkan Usia/Umur [Ascending]";
+
+             }else{
+             text ="Menampilkan Hewan Berdasarkan Usia/Umur [Descending]";
+             }
+
+Tampilan(conn,query,text);
     } else {
         cout << "Failed to connect to database" << endl;
     }
 }
 
-void hewan_status(MYSQL *conn) {
+void hewan_status(MYSQL *conn, int pilih) {
     system("cls");
     cout << "Pilih (1 untuk Sehat, 2 untuk Sakit): ";
     cin >> pilih;
 
     if (conn) {
-        string statusFilter = (pilih == 1) ? "Sehat" : "Sakit";
+        string statusFilter;
+     if (pilih == 1) {
+        statusFilter="Sehat";
 
+     }  else if (pilih == 2){
+          statusFilter = "Sakit";
+     }else {
+     cout << "Tidak Ada Pilihan";
+     };
+if (statusFilter=="Sehat" || statusFilter=="Sakit" ){
         // Query to retrieve animal health status
         string queryStatus = "SELECT "
             "  p.Id_Hewan AS \"Kode Hewan\","
@@ -136,7 +312,18 @@ void hewan_status(MYSQL *conn) {
             "WHERE "
             "  Hasil_Pmk = '" + statusFilter + "';";
 
-         Tampilan(conn,queryStatus);
+//         Tampilan1(conn,queryStatus,text);
+
+            string text;
+             if (pilih == 1){
+                text ="Menampilkan Hewan Berdasarkan Status [Sehat] & Jumlah";
+
+             }else{
+             text ="Menampilkan Hewan Berdasarkan Status [Sakit] & Jumlah";
+             }
+
+    Tampilan(conn,queryStatus,text);
+
             int query_state = mysql_query(conn, queryCount.c_str());
 
             if (!query_state) {
@@ -152,7 +339,7 @@ void hewan_status(MYSQL *conn) {
             } else {
                 cout << "Error in query execution for counting sick animals: " << mysql_error(conn) << endl;
             }
-
+}
     } else {
         cout << "Failed to connect to database" << endl;
     }
@@ -166,10 +353,11 @@ void kalkulasi_hewan(MYSQL *conn) {
                         "GROUP BY kb.Nama "
                         "ORDER BY kb.Nama;";
 
+string text ;
+text = "Total Jumlah Hewan yang Ada Pada Kebun Binatang";
 
-
-    // Tampilkan hasil kueri menggunakan fungsi Tampilan
-    Tampilan(conn,query);
+    // Tampilkan hasil kueri menggunakan fungsi Tampilan1
+    Tampilan(conn,query,text);
 
 }
 
@@ -180,12 +368,12 @@ void jumlah_hewan(MYSQL *conn) {
 
     if (conn) {
         // Query to retrieve the count of animals grouped by zoo
-        string query = "SELECT kb.Nama AS \"NamaKB\", COUNT(*) AS \"  Jumlah Hewan\" "
+        string query = "SELECT kb.Nama AS \"Nama Kebun Binatang\", COUNT(*) AS \"  Jumlah Hewan\" "
             "FROM hewan h "
             "JOIN kebun_binatang kb ON h.Id_KebunBinatang = kb.Id_KebunBinatang "
             "GROUP BY kb.Nama "
             "ORDER BY kb.Nama;";
-Tampilan(conn,query);
+Tampilan(conn,query,"Menampilkan Jumlah Hewan");
 
 
     } else {
@@ -208,7 +396,7 @@ void huruf_hewan(MYSQL *conn) {
     cout << "4. Dimanapun\n";
     cout << "Pilihan (1-4): ";
     cin >> pilihan;
-
+if (pilihan == 1 || pilihan == 2 || pilihan == 3|| pilihan == 4){
     string query;
     switch (pilihan) {
         case 1:
@@ -231,9 +419,21 @@ void huruf_hewan(MYSQL *conn) {
             cout << "Pilihan tidak valid.";
             return;
     }
-
+  string text;
+if (pilihan == 1){
+text = "Mencari Hewan Berdasarkan Huruf [Awalan]";
+}else if (pilihan ==2){
+text = "Mencari Hewan Berdasarkan Huruf [Tengah]";
+}else if (pilihan == 3){
+text = "Mencari Hewan Berdasarkan Huruf [Akhir]";
+}else if (pilihan == 4){
+text = "Mencari Hewan Berdasarkan Huruf [Dimanapun]";
+}
     // Display results for the selected query
-    Tampilan(conn, query);
+    Tampilan(conn, query, text);
+    }else {
+    cout << "\nTidak Ada Pilihan";
+    }
 }
 
 
@@ -253,8 +453,8 @@ void hewan_nama(MYSQL *conn) {
                    "JOIN kandang k ON h.Id_Kandang = k.Id_Kandang "
                    "LEFT JOIN pemeriksaan p ON h.Id_Hewan = p.Id_Hewan "
                    "WHERE h.Nama = '" + cari + "';";
-
-    Tampilan(conn, query);
+string text="Mencari Hewan dengan Nama";
+    Tampilan(conn, query,text);
 }
 
 
@@ -267,7 +467,7 @@ void pakan_hewan(MYSQL *conn) {
                    "FROM hewan h JOIN pakan p ON h.Id_pakan = p.Id_pakan;";
 
     // Display the results of the query
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Menampilkan Jenis Pakan Setiap Hewan");
 }
 
 void pegawai_Dokter(MYSQL *conn) {
@@ -284,7 +484,7 @@ void pegawai_Dokter(MYSQL *conn) {
                         "'Memeriksa & Menyembuhkan Hewan' AS 'Tugas' "
                         "FROM dokter_hewan;";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query,"Data Pegawai dan Tugas [Dokter Hewan]");
 }
 
 
@@ -302,7 +502,7 @@ void pegawai_Pelatih(MYSQL *conn) {
                         "FROM pelatih_hewan;";
 
 
-    Tampilan(conn,query);
+    Tampilan(conn,query,"Data Pegawai dan Tugas [Pelatih Hewan]");
 }
 
 void pegawai_Zookeeper(MYSQL *conn) {
@@ -315,18 +515,18 @@ void pegawai_Zookeeper(MYSQL *conn) {
                         "Telepon AS 'Nomor Telepon', "
                         "Jabatan AS 'Jabatan', "
                         "Gaji AS Gaji,"
-                        "'Menyediakan Pakan & Menyiapkan Pertunjukkan' AS 'Tugas' "
+                        "'Menyediakan Pakan & Menyiapkan Pertunjukan' AS 'Tugas' "
                         "FROM zookeeper;";
 
 
-    Tampilan(conn,query);
+    Tampilan(conn,query,"Data Pegawai dan Tugas [Zookeeper]");
 }
 
 
 void Waktu_pertunjukan(MYSQL *conn){
     system("cls");
     const char *query = "SELECT Nama_Pertunjukan, Lokasi, Waktu_mulai , Waktu_Berakhir FROM `pertunjukan`;";
-    Tampilan(conn, query);
+    Tampilan(conn, query,"Informasi Waktu Pertunjukan");
 }
 
 void Tanggungjawab_pertunjukan(MYSQL *conn){
@@ -337,7 +537,7 @@ void Tanggungjawab_pertunjukan(MYSQL *conn){
                         "zookeeper.Jabatan AS 'Jabatan' "
                         "FROM pertunjukan "
                         "JOIN zookeeper ON pertunjukan.Id_zookeeper = zookeeper.Id_zookeeper;";
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Penanggung Jawab Pertunjukan");
 }
 
 
@@ -347,7 +547,7 @@ void Notpesen_pengunjung(MYSQL *conn) {
                         "FROM `pengunjung` p "
                         "WHERE p.No_Tiket NOT IN (SELECT DISTINCT No_Tiket FROM `pesanan`);";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query,"List Pengunjung yang Tidak Pernah Memesan");
 
 
 
@@ -355,8 +555,8 @@ void Notpesen_pengunjung(MYSQL *conn) {
                              "FROM `pengunjung` p "
                              "WHERE p.No_Tiket NOT IN (SELECT DISTINCT No_Tiket FROM `pesanan`);";
 
-cout << "\nTotal Pengunjung yang tidak memesan : ";
-Tampilan(conn, countQuery);
+cout << "\nTotal Pengunjung yang tidak memesan : \n";
+Tampilan(conn, countQuery, "Total");
 }
 
 void Avg_durasi(MYSQL *conn) {
@@ -366,7 +566,7 @@ void Avg_durasi(MYSQL *conn) {
                         "JOIN tempatparkir t ON p.Plat_Kendaraan = t.Plat_Kendaraan "
                         "WHERE p.Tgl_masuk IS NOT NULL AND t.Keluar IS NOT NULL;";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Rata-rata Durasi Lama Pengunjung di Kebun Binatang");
 }
 
 void Avg_Hari(MYSQL *conn) {
@@ -376,7 +576,7 @@ void Avg_Hari(MYSQL *conn) {
                         "COUNT(DISTINCT Tgl_masuk) AS 'Jumlah Hari' "
                         "FROM pengunjung;";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Rata-rata Pengujung yang Datang [Per Hari]");
 }
 
 void Avg_Bulan(MYSQL *conn) {
@@ -391,7 +591,7 @@ void Avg_Bulan(MYSQL *conn) {
                         "WHERE Tgl_masuk IS NOT NULL "
                         "GROUP BY YEAR(Tgl_masuk), MONTH(Tgl_masuk)";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query,"Rata-rata Pengujung yang Datang [Per Bulan]");
 }
 
 void Avg_Tahun(MYSQL *conn) {
@@ -405,7 +605,7 @@ void Avg_Tahun(MYSQL *conn) {
                         "WHERE Tgl_masuk IS NOT NULL "
                         "GROUP BY YEAR(Tgl_masuk)";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Rata-rata Pengujung yang Datang [Per Tahun]");
 }
 
 
@@ -419,7 +619,7 @@ void Banyak_menu(MYSQL *conn) {
                         "GROUP BY k.Menu "
                         "ORDER BY Jumlah_Pesanan DESC "
                         "LIMIT 1";
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Menu Paling Banyak Di Pesan");
 }
 
 void Sedikit_menu(MYSQL *conn) {
@@ -432,7 +632,7 @@ void Sedikit_menu(MYSQL *conn) {
                         "GROUP BY k.Menu "
                         "ORDER BY Jumlah_Pesanan ASC "
                         "LIMIT 1";
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Menu Paling Sedikit Di Pesan");
 }
 
 
@@ -446,7 +646,7 @@ void Tidak_Parkir(MYSQL *conn) {
                         "(SELECT COUNT(*) FROM `pengunjung` AS subquery WHERE subquery.Plat_Kendaraan IS NULL) AS 'Total' "
                         "FROM `pengunjung`";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Data dan Total  Pengunjung yang Tidak Parkir / Tidak Membawa Kendaraan");
 }
 
 void Hasil_pmk(MYSQL *conn) {
@@ -457,7 +657,7 @@ void Hasil_pmk(MYSQL *conn) {
                         "JOIN hewan ON pemeriksaan.Id_Hewan = hewan.Id_Hewan "
                         "JOIN dokter_hewan ON pemeriksaan.Id_dokter = dokter_hewan.Id_dokter";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Hasil Pemeriksaan Hewan");
 }
 
 void Update_pmk(MYSQL *conn) {
@@ -466,7 +666,13 @@ void Update_pmk(MYSQL *conn) {
     int masuk;
     string pmk, hsl_pmk;
 
-    cout << "\nMasukkan Jumlah Hewan Yang sudah Diperiksa = ";
+
+
+    cout << endl;
+    Tampilan(conn, "SELECT * FROM pemeriksaan", "List Hewan" );
+    cout << endl;
+     cout << "============================================================================\n";
+        cout << "\nMasukkan Jumlah Hewan Yang sudah Diperiksa = ";
     cin >> masuk;
 
     for (int i = 0; i < masuk; i++) {
@@ -483,11 +689,10 @@ void Update_pmk(MYSQL *conn) {
 
         cout << "Data berhasil diupdate!" << endl;
     }
-
+    system("Cls");
     cout << endl;
-    cout << "============================================================\n";
     // Jika ingin menampilkan sesuatu setelah update
-    Tampilan(conn, "SELECT * FROM pemeriksaan");
+    Tampilan(conn, "SELECT * FROM pemeriksaan", "Hasil Update Pemeriksaan Hewan" );
 }
 
 
@@ -544,7 +749,7 @@ void Keuangan_Tgl(MYSQL *conn) {
                         " GROUP BY Tahun, Bulan, Tanggal) AS T3 "
                         "ON T1.Tahun = T3.Tahun AND T1.Bulan = T3.Bulan AND T1.Tanggal = T3.Tanggal";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Pendapatan [Per Tanggal]");
 }
 
 void Keuangan_Bln(MYSQL *conn) {
@@ -590,7 +795,7 @@ void Keuangan_Bln(MYSQL *conn) {
                         "GROUP BY Tahun, Bulan) AS T3 "
                         "ON T1.Tahun = T3.Tahun AND T1.Bulan = T3.Bulan";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Pendapatan [Per Bulan]");
 }
 
 void Keuangan_Tahun(MYSQL *conn) {
@@ -634,30 +839,69 @@ void Keuangan_Tahun(MYSQL *conn) {
                    " GROUP BY Tahun) AS T3 "
                    "ON T1.Tahun = T3.Tahun";
 
-    // Panggil fungsi Tampilan dengan parameter query
-    Tampilan(conn, query);
+    // Panggil fungsi Tampilan1 dengan parameter query
+    Tampilan(conn, query, "Pendapatan [Per Tahun]");
 }
 
+double AmbilTotal(MYSQL *conn, const string &query) {
+    MYSQL_RES *result;
+    MYSQL_ROW row;
 
+    if (mysql_query(conn, query.c_str())) {
+        cerr << "Error in AmbilTotal: " << mysql_error(conn) << endl;
+        return 0.0;
+    }
 
+    result = mysql_store_result(conn);
 
+    if (result == nullptr) {
+        cerr << "Error in AmbilTotal: " << mysql_error(conn) << endl;
+        return 0.0;
+    }
+
+    row = mysql_fetch_row(result);
+
+    if (row == nullptr || row[0] == nullptr) {
+        cerr << "Error in AmbilTotal: Result is NULL or value is NULL" << endl;
+        mysql_free_result(result);
+        return 0.0;
+    }
+
+    // Konversi nilai dari string ke double
+    double total = stod(row[0]);
+
+    mysql_free_result(result);
+
+    return total;
+}
 void Keuangan_keseluruhan(MYSQL *conn) {
     system("cls");
 
     // Pendapatan Tempat Parkir
-    string query1 = "SELECT SUM(TIMESTAMPDIFF(HOUR, Masuk, Keluar) * Harga_Parkir) AS 'Total Pendapatan Parkir' FROM tempatparkir";
-    cout << "\nPendapatan Tempat Parkir :\n";
-    Tampilan(conn, query1);
+    string query1 = "SELECT SUM(TIMESTAMPDIFF(HOUR, Masuk, Keluar) * Harga_Parkir)AS 'Total Pendapatan Parkir' FROM tempatparkir";
+  //  cout << "\nPendapatan Tempat Parkir :\n";
+  cout << "\e[46m [XX] Pendapatan [Keseluruhan] [XX] \e[0m \n\n";
+    Tampilan(conn, query1,"Pendapatan Tempat Parkir" );
+    double totalParkir = AmbilTotal(conn, query1);
 
     // Pendapatan Kantin
     string query2 = "SELECT SUM(Total_Harga) AS 'Total Pendapatan Kantin' FROM pesanan";
-    cout << "\nPendapatan Kantin :\n";
-    Tampilan(conn, query2);
+   // cout << "\nPendapatan Kantin :\n";
+   cout << endl;
+    Tampilan(conn, query2,"Pendapatan Kantin");
+    double totalKantin = AmbilTotal(conn, query2);
 
     // Pendapatan Keseluruhan
     string query3 = "SELECT SUM(Transaksi_Tiket) AS 'Total Pendapatan Pengunjung' FROM pengunjung";
-    cout << "\nPendapatan Keseluruhan :\n";
-    Tampilan(conn, query3);
+  //  cout << "\nPendapatan Pengunjung :\n";
+   cout << endl;
+    Tampilan(conn, query3, "Pendapatan Pengunjung");
+    double totalPengunjung = AmbilTotal(conn, query3);
+
+     double totalKeseluruhan = totalParkir + totalKantin + totalPengunjung;
+cout << fixed << setprecision(0) << "\nTotal Pendapatan Pengunjung, Kantin, dan Tempat Parkir = RP." << put_money(totalKeseluruhan) << endl;
+
+
 }
 
 
@@ -674,32 +918,32 @@ void Pelatihan(MYSQL *conn) {
                         "JOIN "
                         "pelatih_hewan ON melatih.Id_Pelatih = pelatih_hewan.Id_Pelatih;";
 
-    Tampilan(conn, query);
+    Tampilan(conn, query,"Menampilkan Hewan yang Di Latih");
 }
 
 
-void Lokasi_asc(MYSQL *conn) {
+void Lokasi(MYSQL *conn) {
     system("cls");
-    const char *query = "SELECT "
-                        "kandang.Lokasi AS 'Lokasi Kandang', "
-                        "GROUP_CONCAT(hewan.Nama ORDER BY hewan.Nama ASC) AS Hewan "
-                        "FROM kandang "
-                        "LEFT JOIN hewan ON kandang.Id_Kandang = hewan.Id_Kandang "
-                        "GROUP BY kandang.Lokasi "
-                        "ORDER BY kandang.Lokasi ASC;";
-    Tampilan(conn, query);
-}
+     cout << "Pilih(1 untuk Ascending, 2 untuk Descending): ";
+        cin >> pilih;
+     string orderType = (pilih == 1) ? "ASC" : ((pilih == 2) ? "DESC" : "Tidak Ada Pilihan" ) ;
+string query = "SELECT "
+                "kandang.Lokasi AS 'Lokasi Kandang', "
+                "GROUP_CONCAT(hewan.Nama ORDER BY hewan.Nama ASC) AS Hewan "
+                "FROM kandang "
+                "LEFT JOIN hewan ON kandang.Id_Kandang = hewan.Id_Kandang "
+                "GROUP BY kandang.Lokasi "
+                "ORDER BY kandang.Lokasi " + orderType + ";";
 
-void Lokasi_dsc(MYSQL *conn) {
-    system("cls");
-    const char *query = "SELECT "
-                        "kandang.Lokasi AS 'Lokasi Kandang', "
-                        "GROUP_CONCAT(hewan.Nama ORDER BY hewan.Nama DESC) AS Hewan "
-                        "FROM kandang "
-                        "LEFT JOIN hewan ON kandang.Id_Kandang = hewan.Id_Kandang "
-                        "GROUP BY kandang.Lokasi "
-                        "ORDER BY kandang.Lokasi DESC;";
-    Tampilan(conn, query);
+    string text;
+    if (pilih == 1){
+     text ="Mengelompokan Hewan Berdasarkan Lokasi [Ascending]";
+    }else{
+     text ="Mengelompokan Hewan Berdasarkan Lokasi [Descending]";
+    }
+
+    Tampilan(conn, query, text);
+
 }
 
 void Info_luas(MYSQL *conn) {
@@ -708,7 +952,7 @@ void Info_luas(MYSQL *conn) {
                         "'Bandung Park Zoo' AS 'Nama Kebun Binatang', "
                         "SUM(Luas) AS Total_Luas "
                         "FROM kandang;";
-    Tampilan(conn, query);
+    Tampilan(conn, query, "Informasi Luas Bandung Park Zoo");
 }
 
 
@@ -772,11 +1016,13 @@ int main() {
     conn = mysql_init(0);
     conn = mysql_real_connect(conn, "localhost", "root", "", "Bandung_park_zoo", 0, NULL, 0);
 if(conn){
+
 s1:
  pilih=printMenu2(1);
 
         switch (pilih) {
             case 1:
+
         system("cls");
             cout << "\n=================================================";
             cout << "\n\t   Manajemen Hewan";
@@ -786,11 +1032,14 @@ s1:
             cout << "\nPilih : ";
             cin >> pilih1;
 
+        while (true){
 if (pilih1==1){
-    Display_hewan(conn);
+
+    Display_hewan(conn,pilih1);
+
 
 }else if(pilih1 ==2){
-    hewan_status(conn);
+    hewan_status(conn,pilih1);
 }else if(pilih1 ==3){
 jumlah_hewan(conn);
 }else if(pilih1 ==4){
@@ -803,6 +1052,7 @@ huruf_hewan(conn);
 kalkulasi_hewan(conn);
 }
                             cout << "\n== Tekan [ESC] untuk Kembali ke[menu] ==\n";
+                            cout << "\n== Tekan [F5] untuk Refresh ==\n";
                             escKey = _getch();
                             if (escKey == 27)
                             {
@@ -811,6 +1061,13 @@ kalkulasi_hewan(conn);
                                 goto s1;
 
                             }
+
+            escKey = _getch();
+            if (escKey == 27) {
+                // Handle going back to menu
+                continue;
+            }
+        }
                 break;
             case 2:
                 system("cls");
@@ -1063,7 +1320,8 @@ kalkulasi_hewan(conn);
             cout << "\n=================================================";
             cout << "\n\e[1;37m\033[48;5;212m[::] Silahkan Pilih Menu [::]\e[0m\n";
             cout <<"\n1.Menghitung Pendapatan [Per Tanggal]\n2.Menghitung Pendapatan [Per Bulan]"
-                 <<"\n3.Menghitung Pendapatan [per Tahun]\n4.Menghitung Pendapatan [Keseluruhan]";
+                 <<"\n3.Menghitung Pendapatan [Per Tahun]\n4.Menghitung Pendapatan [Keseluruhan]"
+                 << "\n\e[46mNote :\e[0m\nPendapatan dari Pengunjung, Kantin, Tempat Parkir";
             cout << "\nPilih : ";
             cin >> pilih1;
             if (pilih1==1){
@@ -1128,17 +1386,13 @@ kalkulasi_hewan(conn);
             cout << "\n\t   Manajemen Kandang";
             cout << "\n=================================================";
             cout << "\n\e[1;37m\033[48;5;212m[::] Silahkan Pilih Menu [::]\e[0m\n";
-            cout <<"\n1.Mengelompokan Hewan Berdasarkan Lokasi (Asecending)\n"
-                 <<"2.Mengelompokan Hewan Berdasarkan Lokasi (Descending)\n"
-                 <<"3.Informasi Luas Bandung Park Zoo";
+            cout <<"\n1.Mengelompokan Hewan Berdasarkan Lokasi Asc/Dsc\n"
+                 <<"2.Informasi Luas Bandung Park Zoo";
             cout << "\nPilih : ";
             cin >> pilih1;
             if (pilih1==1){
-            Lokasi_asc(conn);
-
+            Lokasi(conn);
             }else if(pilih1==2){
-           Lokasi_dsc(conn);
-            }else if(pilih1==3){
             Info_luas(conn);
             }else{
                 cout <<"\nTidak ada pilihan " << pilih1 << endl;
@@ -1168,6 +1422,7 @@ kalkulasi_hewan(conn);
                 // Handle invalid option (if needed)
                 break;
         }
+            // Menunggu input F5 untuk refresh
 
 
 ////batass
@@ -1177,8 +1432,5 @@ kalkulasi_hewan(conn);
 
     return 0;
 }
-
-
-
 
 

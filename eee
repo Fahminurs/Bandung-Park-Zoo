@@ -1,0 +1,18 @@
+<p>Untuk mencoba/menggunakan program bisa mengikuti 2 instalasi berikut: </p>  
+<h3> Instalasi Program menggunakan Code Block </h3>
+<ol type ="1" >
+  <li>Siapkan bahan 'Mysql Conector C++' yang diperlukan, bisa download di link ini, https://drive.google.com/file/d/10pOw7OhEr_hVvx2VaasGNgiEFROw5C9-/view?usp=sharing </li> <br>
+  <li>Extrak 'MySQL.rar' dan pindahkan folder 'MySQL' ke `bash " C:\Program Files " , sehingga menjadi 'MySQL\MySQL Server 8.2'  </li> <br>
+  <li>Extrak file github '.zip' yand sudah didownload di repository 'Bandung-Park-Zoo' </li> <br>
+  <li>Buka Code Block , dan tekan 'CTRL+O', pilih 'main.cpp' &  'M_kebunbinatang.cbp'</li> <br>
+  <li>Jangan di Run Terlebih dahulu sebelum mengkonfigurasi Database (Ikuti langkah Instalasi Database)</li> <br>
+  <li>Setelah Database di pasang, silahkan jalankan program pada Code Block</li> <br>
+
+</ol>
+<h3> Instalasi Database </h3>
+<ol type ="1" >
+  <li>Siapkan Xaamp atau yang lainnya, yang sudah diinstal Mysql</li> <br>
+  <li>Siapkandatabase '.sql' yang bisa didownload pada link ini, https://drive.google.com/file/d/1U58UPwHkzypnZJoJwUJff8R-fSK6fVia/view?usp=sharing </li> <br>
+  <li>Eksport database 'bandung_park_zoo', pastikan nama di database sama yaitu 'bandung_park_zoo' </li> <br>
+  <li>Instalasi Database Selesai... (Kembali lagi ke langkah Instalasi Program menggunakan Code Block )</li> <br>
+</ol>
