@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 06 Jan 2024 pada 17.25
--- Versi server: 10.4.28-MariaDB
--- Versi PHP: 8.2.4
+-- Waktu pembuatan: 10 Jan 2024 pada 05.20
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -114,7 +114,6 @@ INSERT INTO `hewan` (`Id_Hewan`, `Nama`, `NamaIlmiah`, `Jenis_hewan`, `Id_pakan`
 ('LU002', 'Lumba-lumba2', 'Delphinus delphis', 'Mamalia', 'IK3629', 'Betina', '2008-02-16', 'Lumba-lumba adalah mamalia laut yang sangat cerdas, sosial, dan terkenal dengan kemampuan berkomunikasi dan interaksi yang kompleks. Mereka sering ditemukan di perairan hangat dan dingin di seluruh dunia, dan sering menjadi daya tarik dalam aktivitas melihat-lihat satwa liar di laut.', 'Z001', 'LM004'),
 ('LU003', 'Lumba-lumba3', 'Delphinus delphis', 'Mamalia', 'IK3629', 'Betina', '2010-01-15', 'Lumba-lumba adalah mamalia laut yang sangat cerdas, sosial, dan terkenal dengan kemampuan berkomunikasi dan interaksi yang kompleks. Mereka sering ditemukan di perairan hangat dan dingin di seluruh dunia, dan sering menjadi daya tarik dalam aktivitas melihat-lihat satwa liar di laut.', 'Z001', 'LM004'),
 ('LU004', 'Lumba-lumba4', 'Delphinus delphis', 'Mamalia', 'IK3629', 'Jantan', '2009-11-15', 'Lumba-lumba adalah mamalia laut yang sangat cerdas, sosial, dan terkenal dengan kemampuan berkomunikasi dan interaksi yang kompleks. Mereka sering ditemukan di perairan hangat dan dingin di seluruh dunia, dan sering menjadi daya tarik dalam aktivitas melihat-lihat satwa liar di laut.', 'Z001', 'LM004'),
-('MA001', 'Macan Jawa', 'Jawa Macan', 'Mamalia', 'DG290324', 'Laki Laki', '2024-01-31', 'Macan adalah ................................................', 'Z001', 'AG250'),
 ('ME001', 'Burung Merak1', 'Pavo muticus', 'Aves', 'BJ213724', 'Jantan', '2010-07-12', 'Merak dikenal dengan keindahan bulunya yang menakjubkan, terutama yang dimiliki oleh pejantan, dengan bulu-bulu ekor yang panjang dan berwarna-warni yang membentuk kipas indah saat mereka memamerkannya selama musim kawin. Burung merak seringkali dianggap simbol keindahan dan keanggunan.\r\n\r\nMerak biasanya dapat ditemukan di wilayah Asia Tenggara, dan mereka memiliki kecenderungan untuk hidup di daerah yang lebih terbuka seperti padang rumput, savana, atau hutan terbuka. Mereka omnivora, memakan berbagai jenis makanan termasuk biji-bijian, serangga, buah-buahan, dan kadang-kadang reptil kecil atau mamalia kecil.', 'Z001', 'EK985'),
 ('ME002', 'Burung Merak2', 'Pavo muticus', 'Aves', 'BJ213724', 'Betina', '2010-07-05', 'Merak dikenal dengan keindahan bulunya yang menakjubkan, terutama yang dimiliki oleh pejantan, dengan bulu-bulu ekor yang panjang dan berwarna-warni yang membentuk kipas indah saat mereka memamerkannya selama musim kawin. Burung merak seringkali dianggap simbol keindahan dan keanggunan.\r\n\r\nMerak biasanya dapat ditemukan di wilayah Asia Tenggara, dan mereka memiliki kecenderungan untuk hidup di daerah yang lebih terbuka seperti padang rumput, savana, atau hutan terbuka. Mereka omnivora, memakan berbagai jenis makanan termasuk biji-bijian, serangga, buah-buahan, dan kadang-kadang reptil kecil atau mamalia kecil.', 'Z001', 'EK985'),
 ('ME003', 'Burung Merak3', 'Pavo muticus', 'Aves', 'BJ213724', 'Jantan', '2013-12-01', 'Merak dikenal dengan keindahan bulunya yang menakjubkan, terutama yang dimiliki oleh pejantan, dengan bulu-bulu ekor yang panjang dan berwarna-warni yang membentuk kipas indah saat mereka memamerkannya selama musim kawin. Burung merak seringkali dianggap simbol keindahan dan keanggunan.\r\n\r\nMerak biasanya dapat ditemukan di wilayah Asia Tenggara, dan mereka memiliki kecenderungan untuk hidup di daerah yang lebih terbuka seperti padang rumput, savana, atau hutan terbuka. Mereka omnivora, memakan berbagai jenis makanan termasuk biji-bijian, serangga, buah-buahan, dan kadang-kadang reptil kecil atau mamalia kecil.', 'Z001', 'EK985'),
@@ -449,8 +448,7 @@ INSERT INTO `pemeriksaan` (`Id_Pemeriksaan`, `Tgl_Pemeriksaan`, `Hasil_Pmk`, `Id
 ('PE23057', '2023-03-01', 'Sehat', 'D1007', 'TP001'),
 ('PE23058', '2023-03-01', 'Sehat', 'D1007', 'TP002'),
 ('PE23059', '2023-02-20', 'Sehat', 'D1001', 'ZE001'),
-('PE23060', '2023-02-20', 'Sehat', 'D1001', 'ZE002'),
-('PE23061', '2023-01-03', 'Sehat', 'D1000', 'MA001');
+('PE23060', '2023-02-20', 'Sehat', 'D1001', 'ZE002');
 
 -- --------------------------------------------------------
 
